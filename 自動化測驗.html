@@ -67,13 +67,8 @@
         resultDiv.style.backgroundColor = "#d4edda";
         resultDiv.innerHTML = `${name} 同學，您的成績：${score} 分。<br>資料傳送中...`;
 
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbySS_g4eDcixdEddCki8Cjz69ue7yqvduTH10Q4VrmKk0oSVkBWFzaCW2XRCAjqH1gC/exec';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyhtLt0rWj-cHK0Pj_BgCk_hprPGIIC0iVELAzl9xzDVTzS1bt4DliUAx77ggxLZQ8v/exec';
         
-        // 使用 URLSearchParams 配合 no-cors，這是最穩定的 GAS 資料寫入方式
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('score', score);
-
         try {
             await fetch(scriptUrl, {
                 method: 'POST',
@@ -81,7 +76,7 @@
                 body: JSON.stringify({ name: name, score: score }),
                 headers: { 'Content-Type': 'application/json' }
             });
-            resultDiv.innerHTML = `${name} 同學，成績已送出！<br>（如果試算表沒顯示，請檢查 GAS 程式碼的試算表 ID 是否正確）`;
+            resultDiv.innerHTML = `${name} 同學，成績已送出！<br>（若試算表未顯示，請確認後端 Code.gs 中的試算表 ID 是否正確）`;
         } catch (error) {
             resultDiv.innerHTML = "傳送請求已發出，請檢查您的試算表是否有更新。";
         }
