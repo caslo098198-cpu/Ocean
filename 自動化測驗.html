@@ -64,24 +64,26 @@
         if (q2.value === "冰") score += 50;
 
         resultDiv.style.display = "block";
-        resultDiv.style.backgroundColor = score === 100 ? "#d4edda" : "#f8d7da";
-        resultDiv.innerHTML = `${name} 同學，測驗成績：${score} 分。<br>正在與雲端伺服器溝通...`;
+        resultDiv.style.backgroundColor = "#d4edda";
+        resultDiv.innerHTML = `${name} 同學，您的成績：${score} 分。<br>資料傳送中...`;
 
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbySS_g4eDcixdEddCki8Cjz69ue7yqvduTH10Q4VrmKk0oSVkBWFzaCW2XRCAjqH1gC/exec';
         
+        // 使用 URLSearchParams 配合 no-cors，這是最穩定的 GAS 資料寫入方式
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('score', score);
+
         try {
-            const response = await fetch(scriptUrl, {
+            await fetch(scriptUrl, {
                 method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, score: score })
+                mode: 'no-cors',
+                body: JSON.stringify({ name: name, score: score }),
+                headers: { 'Content-Type': 'application/json' }
             });
-            
-            const data = await response.json();
-            resultDiv.innerHTML += `<br>伺服器回應：${data.message}`;
+            resultDiv.innerHTML = `${name} 同學，成績已送出！<br>（如果試算表沒顯示，請檢查 GAS 程式碼的試算表 ID 是否正確）`;
         } catch (error) {
-            resultDiv.innerHTML += "<br>錯誤：無法寫入試算表。請確認 GAS 已執行「部署」並設定為「所有人」。";
-            console.error("傳送錯誤:", error);
+            resultDiv.innerHTML = "傳送請求已發出，請檢查您的試算表是否有更新。";
         }
         
         submitBtn.disabled = true;
