@@ -67,10 +67,9 @@
         resultDiv.style.backgroundColor = score === 100 ? "#d4edda" : "#f8d7da";
         resultDiv.innerHTML = `${name} 同學，測驗成績：${score} 分。<br>正在與雲端伺服器溝通...`;
 
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzHc6AmYQ3UJ69O0kjgwykE4sXXjR95pHEywWHyXsmzy3e5pqt-znzKdCUVQh7kh_FZ/exec';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbySS_g4eDcixdEddCki8Cjz69ue7yqvduTH10Q4VrmKk0oSVkBWFzaCW2XRCAjqH1gC/exec';
         
         try {
-            // 使用 application/json 發送並等待回應
             const response = await fetch(scriptUrl, {
                 method: 'POST',
                 mode: 'cors',
