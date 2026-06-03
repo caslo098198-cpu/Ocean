@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習單</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f8ff; display: flex; justify-content: center; padding: 20px; }
+        .quiz-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h1 { color: #0077be; text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .question { margin-bottom: 20px; padding: 10px; background: #f9f9f9; border-radius: 8px; }
+        textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; margin-top: 5px; }
+        button { width: 100%; padding: 12px; background-color: #0077be; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #005f96; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>學習單</h1>
+    
+    <div class="input-group">
+        <label for="className">班級：</label>
+        <input type="text" id="className" placeholder="例如：701">
+    </div>
+    <div class="input-group">
+        <label for="studentName">學生姓名：</label>
+        <input type="text" id="studentName" placeholder="請輸入姓名">
+    </div>
+
+    <div class="question">
+        <p>1. What is your name？</p>
+        <input type="radio" name="q1" value="Sam"> Sam<br>
+        <input type="radio" name="q1" value="Daisy"> Daisy<br>
+        <input type="radio" name="q1" value="Sunny"> Sunny
+    </div>
+
+    <div class="question">
+        <p>2. Do you like the movie？</p>
+        <input type="radio" name="q2" value="Yes"> Yes<br>
+        <input type="radio" name="q2" value="No"> No
+    </div>
+
+    <div class="question">
+        <p>3. Your opinion：</p>
+        <textarea id="opinion" rows="3" placeholder="請輸入您的想法..."></textarea>
+    </div>
+
+    <button id="submitBtn" onclick="submitData()">送出</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    async function submitData() {
+        const className = document.getElementById('className').value;
+        const name = document.getElementById('studentName').value;
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+        const opinion = document.getElementById('opinion').value;
+        const resultDiv = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!className || !name || !q1 || !q2) {
+            alert("請確認班級、姓名與所有題目都已填寫完畢！");
+            return;
+        }
+
+        resultDiv.style.display = "block";
+        resultDiv.style.backgroundColor = "#d4edda";
+        resultDiv.innerHTML = "資料傳送中...";
+
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxx_1C--ZQ9Q2OFjzkVZRYuYjcBZvyOJYVYqvsOYt2aE50oCi5JaPG5YsIH4sApal464A/exec';
+        
+        try {
+            await fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ 
+                    className: className,
+                    name: name, 
+                    q1: q1.value,
+                    q2: q2.value,
+                    opinion: opinion
+                }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            resultDiv.innerHTML = "學習單已成功送出！";
+        } catch (error) {
+            resultDiv.innerHTML = "傳送失敗，請確認網路連線。";
+        }
+        
+        submitBtn.disabled = true;
+    }
+</script>
+
+</body>
+</html>
