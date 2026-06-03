@@ -67,7 +67,8 @@
         resultDiv.style.backgroundColor = "#d4edda";
         resultDiv.innerHTML = `${name} 同學，您的成績：${score} 分。<br>資料傳送中...`;
 
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyhtLt0rWj-cHK0Pj_BgCk_hprPGIIC0iVELAzl9xzDVTzS1bt4DliUAx77ggxLZQ8v/exec';
+        // 更新後的 GAS 連結
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyxx_1C--ZQ9Q2OFjzkVZRYuYjcBZvyOJYVYqvsOYt2aE50oCi5JaPG5YsIH4sApal464A/exec';
         
         try {
             await fetch(scriptUrl, {
@@ -76,7 +77,7 @@
                 body: JSON.stringify({ name: name, score: score }),
                 headers: { 'Content-Type': 'application/json' }
             });
-            resultDiv.innerHTML = `${name} 同學，成績已送出！<br>（若試算表未顯示，請確認後端 Code.gs 中的試算表 ID 是否正確）`;
+            resultDiv.innerHTML = `${name} 同學，成績已送出！`;
         } catch (error) {
             resultDiv.innerHTML = "傳送請求已發出，請檢查您的試算表是否有更新。";
         }
