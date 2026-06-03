@@ -68,22 +68,25 @@
         resultDiv.style.backgroundColor = score === 100 ? "#d4edda" : "#f8d7da";
         resultDiv.innerHTML = `${name} 同學，您的測驗成績為：${score} 分！<br>正在傳送資料至後台...`;
 
-        // 傳送資料到 Google 試算表
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbw2l3g6KqLOLB86zIHmkPwvzSkQTKQ4guvGiVOCKdhb1YVBJfXpc_ayJ3K3RP0e1K_W/exec';
         
+        // 修正：使用 FormData 傳送方式有時比 JSON 更穩定，若 GAS 端採用參數接收，請改用此法
+        // 這裡維持 JSON 格式，但移除 mode: 'no-cors' 以便能接收到後端回傳的狀態訊息
         try {
             const response = await fetch(scriptUrl, {
                 method: 'POST',
-                mode: 'no-cors', // 處理跨域問題
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ name: name, score: score })
             });
-            resultDiv.innerHTML += "<br>資料已成功記錄！";
+            
+            const data = await response.json();
+            resultDiv.innerHTML += `<br>後台回應：${data.message || '成功記錄'}`;
         } catch (error) {
-            resultDiv.innerHTML += "<br>傳送失敗，請確認網路連線。";
+            resultDiv.innerHTML += "<br>傳送失敗，請確認 GAS 權限是否設定為「所有人」。";
+            console.error("Error:", error);
         }
         
-        submitBtn.disabled = true; // 防止重複點擊
+        submitBtn.disabled = true;
     }
 </script>
 
